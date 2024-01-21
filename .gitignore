@@ -155,3 +155,4 @@ cython_debug/
 
 # Personal files
 gists.json
+logs/

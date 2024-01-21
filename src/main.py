@@ -1,12 +1,21 @@
 import json
 import logging
 import os
+from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
 
+parents_dir = Path(__file__).parent.absolute().parent
+data_dir = parents_dir / "data"
+logs_dir = parents_dir / "logs"
+
+logs_dir.mkdir(exist_ok=True)
+
 logging.basicConfig(
-    filename="gist_uploads.log", format="%(asctime)s - %(message)s", level=logging.INFO
+    filename=logs_dir / "gist_uploads.log",
+    format="%(asctime)s - %(message)s",
+    level=logging.INFO,
 )
 
 logger = logging.getLogger(__name__)
@@ -33,7 +42,7 @@ def main():
         "X-GitHub-Api-Version": "2022-11-28",
     }
 
-    with open("data/gists.json", "r") as f:
+    with open(data_dir / "gists.json", "r") as f:
         gists = json.loads(f.read())
 
     for gist in gists:
@@ -42,5 +51,7 @@ def main():
             logger.info(f"Gist Id {gist['gist_id']} updated successfully")
         else:
             logger.error(f"Failed to update Gist Id {gist['gist_id']}: {r.content}")
+
+
 if __name__ == "__main__":
     main()
